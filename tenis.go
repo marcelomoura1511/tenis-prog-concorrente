@@ -47,8 +47,7 @@ func partida(jogadorIndex int, passos chan int) {
 			//printando o placar
 			fmt.Printf("%s pontuou.\n", players[oponenteIndex])
 			pontuacao[oponenteIndex]++
-			fmt.Print("\n******** Placar do Game ********\n")
-			fmt.Printf("%s | %d x %d | %s \n\n", players[0], pontuacao[0], pontuacao[1], players[1])
+			printMenu("Placar do Game", pontuacao[0], pontuacao[1])
 		} else {
 			if saque{
 				fmt.Printf("%s sacou.\n", players[jogadorIndex])
@@ -58,22 +57,23 @@ func partida(jogadorIndex int, passos chan int) {
 			}
 		}
 		passo := <-passos
+		//verificando se o game acabou
 		if pontuacao[oponenteIndex] >= qtdPontosGame && pontuacao[oponenteIndex]-pontuacao[jogadorIndex]>1  {
 			games[oponenteIndex]++
 			gamesjogados := games[jogadorIndex]+games[oponenteIndex]
 			fmt.Printf("%s ganhou o %dº game.\n", players[oponenteIndex], gamesjogados)
-			fmt.Print("\n******** Placar de Games ********\n")
-			fmt.Printf("%s | %d x %d | %s \n\n", players[0], games[0], games[1], players[1])
+			printMenu("Placar de Games", games[0], games[1])
 			pontuacao = [2]int{0, 0}
 		}
+		//verificando se o set acabou
 		if games[oponenteIndex] >= qtdGames && games[oponenteIndex]-games[jogadorIndex]>1  {
 			sets[oponenteIndex]++
 			setjogados:=sets[jogadorIndex]+sets[oponenteIndex]
 			fmt.Printf("%s ganhou o %dº set.\n", players[oponenteIndex], setjogados)
-			fmt.Print("\n******** Placar de Sets ********\n")
-			fmt.Printf("%s | %d x %d | %s \n\n", players[0], sets[0], sets[1], players[1])
+			printMenu("Placar de Sets", sets[0], sets[1])
 			games = [2]int{0, 0}
 		}
+		//verificando se a atingiu a quantidade de sets para acabar a partida
 		if sets[oponenteIndex]==qtdSets{
 			close(passos)
 			encerrar=true
@@ -104,6 +104,11 @@ func isPrimo(num int) bool{
 	return false
 }
 
+func printMenu(titulo string, ptd1 int, ptd2 int){
+	fmt.Printf("\n******** %s ********\n", titulo)
+	fmt.Printf("%s | %d x %d | %s \n\n", players[0], ptd1, ptd2, players[1])
+}
+
 func main() {
 	args := os.Args[1:]
 
@@ -115,7 +120,7 @@ func main() {
 	num, erro:= strconv.Atoi(os.Args[1])
 	num1, erro1:= strconv.Atoi(os.Args[2])
 	num2, erro2:= strconv.Atoi(os.Args[3])
-
+	//verificação das inserções dos dados do usuário
 	if erro != nil {
 		fmt.Println("Erro, informe um número inteiro para limite de pontos do game.")
 		os.Exit(2)
@@ -159,7 +164,6 @@ func main() {
 	go partida(0, passos)
 	passos <- 1
 	go partida(1, passos)
-
 
 	wg.Wait()
 }
