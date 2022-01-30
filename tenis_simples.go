@@ -54,7 +54,7 @@ func partida(jogadorIndex int, games chan int) {
 		}
 		game := <-games
 		//verificando se o jogo acabou e fechando o canal
-		if pontuacao[oponenteIndex] == qtdPontos {
+		if pontuacao[oponenteIndex] >= qtdPontos && pontuacao[oponenteIndex]-pontuacao[jogadorIndex]>1  {
 			close(games)
 			encerrar=true
 			break
