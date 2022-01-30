@@ -99,6 +99,11 @@ func main() {
 		os.Exit(2)
 	}
 
+	if num < 2{
+		fmt.Println("Erro, informe um número inteiro maior ou igual a 2.")
+		os.Exit(2)
+	}
+
 	//gerar números aleatórios a cada execução
 	rand.Seed(time.Now().UnixNano())
 
